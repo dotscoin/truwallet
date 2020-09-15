@@ -1,3 +1,4 @@
+import 'package:truwallet/presentation/intro/introscreen.dart';
 import 'package:truwallet/presentation/profile/exportkeys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -16,6 +17,13 @@ class _ProfileState extends State<Profile> {
     setState(() {
       isloading = false;
     });
+  }
+
+  logout() async {
+    final storage = new FlutterSecureStorage();
+    await storage.deleteAll();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => IntroScreen()));
   }
 
   @override
@@ -80,6 +88,27 @@ class _ProfileState extends State<Profile> {
                                           ExportKeygenScreen()));
                             },
                             child: Icon(Icons.arrow_forward_ios)))),
+                GestureDetector(
+                  onTap: () {
+                    logout();
+                  },
+                  child: Container(
+                      margin: const EdgeInsets.all(10),
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.red,
+                          boxShadow: [
+                            BoxShadow(color: Colors.grey[400], blurRadius: 20)
+                          ]),
+                      child: Center(
+                        child: Text(
+                          "Sign in to Another Wallet",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      )),
+                ),
                 SizedBox(height: 5),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),

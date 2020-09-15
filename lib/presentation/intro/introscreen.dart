@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:truwallet/presentation/home/HomeScreen.dart';
 import 'package:truwallet/presentation/intro/existingwallet.dart';
@@ -13,20 +14,33 @@ class _IntroScreenState extends State<IntroScreen> {
   checkifuser() async {
     final storage = new FlutterSecureStorage();
     var address = await storage.read(key: 'address');
-    if (address != null){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    if (address != null) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     checkifuser();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(elevation: 0, backgroundColor: Colors.white),
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              SystemNavigator.pop();
+            },
+          ),
+        ),
         body: Column(children: <Widget>[
           Container(
               height: MediaQuery.of(context).size.height / 1.5,
@@ -107,7 +121,7 @@ class _IntroScreenState extends State<IntroScreen> {
           SizedBox(height: 25),
           GestureDetector(
             onTap: () {
-              Navigator.pushReplacement(context,
+              Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ShowKeygenScreen()));
             },
             child: Container(
@@ -124,7 +138,7 @@ class _IntroScreenState extends State<IntroScreen> {
           SizedBox(height: 25),
           GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(context,
+                Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ExistingWallet()));
               },
               child: Center(

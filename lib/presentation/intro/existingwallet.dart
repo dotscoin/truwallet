@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:truwallet/presentation/home/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,14 +13,28 @@ class _ExistingWalletState extends State<ExistingWallet> {
   TextEditingController _skcontroller = new TextEditingController();
   TextEditingController _vkcontroller = new TextEditingController();
 
+  storeandroute() async {
+    final storage = new FlutterSecureStorage();
+    await storage.write(key: 'address', value: _addresscontroller.text);
+    await storage.write(key: 'vk', value: _vkcontroller.text);
+    await storage.write(key: 'sk', value: _skcontroller.text);
+
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => HomeScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          elevation: 0,
-          title: Text("DOTSWALLET",
-              style: TextStyle(color: Colors.blue, letterSpacing: 1.5)),
-          backgroundColor: Colors.white),
+        elevation: 0,
+        title: Text("DOTSWALLET",
+            style: TextStyle(color: Colors.blue, letterSpacing: 1.5)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(
+          color: Colors.black,
+        ),
+      ),
       body: Container(
           child: SingleChildScrollView(
         child: Column(
@@ -40,6 +55,11 @@ class _ExistingWalletState extends State<ExistingWallet> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: GestureDetector(
+                          onTap: () async {
+                            final ClipboardData data =
+                                await Clipboard.getData(Clipboard.kTextPlain);
+                            _addresscontroller.text = data.text;
+                          },
                           child: Text(
                             "Paste",
                             style: TextStyle(fontSize: 15),
@@ -81,6 +101,11 @@ class _ExistingWalletState extends State<ExistingWallet> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: GestureDetector(
+                          onTap: () async {
+                            final ClipboardData data =
+                                await Clipboard.getData(Clipboard.kTextPlain);
+                            _skcontroller.text = data.text;
+                          },
                           child: Text(
                             "Paste",
                             style: TextStyle(fontSize: 15),
@@ -122,6 +147,11 @@ class _ExistingWalletState extends State<ExistingWallet> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: GestureDetector(
+                          onTap: () async {
+                            final ClipboardData data =
+                                await Clipboard.getData(Clipboard.kTextPlain);
+                            _vkcontroller.text = data.text;
+                          },
                           child: Text(
                             "Paste",
                             style: TextStyle(fontSize: 15),
@@ -152,8 +182,7 @@ class _ExistingWalletState extends State<ExistingWallet> {
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()));
+                    storeandroute();
                   },
                   child: Container(
                       height: 50,

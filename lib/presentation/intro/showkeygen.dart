@@ -46,10 +46,12 @@ class _ShowKeygenScreenState extends State<ShowKeygenScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          elevation: 0,
-          title: Text("TRUWALLET",
-              style: TextStyle(color: Colors.blue, letterSpacing: 1.5)),
-          backgroundColor: Colors.white),
+        elevation: 0,
+        title: Text("TRUWALLET",
+            style: TextStyle(color: Colors.blue, letterSpacing: 1.5)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
