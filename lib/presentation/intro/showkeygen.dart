@@ -27,12 +27,32 @@ class _ShowKeygenScreenState extends State<ShowKeygenScreen> {
 
   storeandroute() async {
     final storage = new FlutterSecureStorage();
-    await storage.write(key: 'address', value: data['address']);
-    await storage.write(key: 'vk', value: data['vk']);
-    await storage.write(key: 'sk', value: data['sk']);
+    var index = await storage.read(key: 'n');
 
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    if (index != null) {
+      int n = int.parse(index);
+      n = n + 1;
+      await storage.delete(key: 'n');
+      await storage.write(key: 'address$n', value: data['address']);
+      await storage.write(key: 'vk$n', value: data['vk']);
+      await storage.write(key: 'sk$n', value: data['sk']);
+      await storage.write(key: 'n', value: "$n");
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } else {
+      int n = 1;
+      await storage.write(key: 'address$n', value: data['address']);
+      await storage.write(key: 'vk$n', value: data['vk']);
+      await storage.write(key: 'sk$n', value: data['sk']);
+      await storage.write(key: 'n', value: "$n");
+      await storage.delete(key: 'n');
+      await storage.write(key: 'address', value: data['address']);
+      await storage.write(key: 'vk', value: data['vk']);
+      await storage.write(key: 'sk', value: data['sk']);
+      await storage.write(key: 'n', value: "$n");
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    }
   }
 
   @override

@@ -2,6 +2,8 @@ import 'package:truwallet/presentation/intro/introscreen.dart';
 import 'package:truwallet/presentation/profile/exportkeys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:truwallet/presentation/wallet/addwallet.dart';
+import 'package:truwallet/presentation/wallet/wallets.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -13,7 +15,7 @@ class _ProfileState extends State<Profile> {
   bool isloading;
   getaddress() async {
     final storage = new FlutterSecureStorage();
-    addr = await storage.read(key: 'address');
+    addr = await storage.read(key: 'address2');
     setState(() {
       isloading = false;
     });
@@ -21,9 +23,9 @@ class _ProfileState extends State<Profile> {
 
   logout() async {
     final storage = new FlutterSecureStorage();
-    await storage.deleteAll();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => IntroScreen()));
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddWalletScreen()));
   }
 
   @override
@@ -65,8 +67,20 @@ class _ProfileState extends State<Profile> {
                         boxShadow: [
                           BoxShadow(color: Colors.grey[400], blurRadius: 20)
                         ]),
-                    child: ListTile(
-                        title: Text("Address"), subtitle: Text("${addr}"))),
+                    child: Center(
+                      child: ListTile(
+                        title: Text("Wallets"),
+                        leading: Icon(Icons.account_balance_wallet),
+                        trailing: FlatButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WalletsScreen()));
+                            },
+                            child: Icon(Icons.arrow_forward_ios)),
+                      ),
+                    )),
                 Container(
                     margin: const EdgeInsets.all(10),
                     height: 75,
