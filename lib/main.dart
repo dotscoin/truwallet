@@ -8,11 +8,16 @@ void main() {
   //   systemNavigationBarColor: Colors.blue, // navigation bar color
   //   statusBarColor: Colors.white12, // status bar color
   // ));
-  runApp(MyApp());
+  runApp(Truwallet());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class Truwallet extends StatefulWidget {
+  @override
+  _TruwalletState createState() => _TruwalletState();
+}
+
+class _TruwalletState extends State<Truwallet> {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

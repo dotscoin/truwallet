@@ -2,6 +2,7 @@ import 'package:truwallet/presentation/intro/introscreen.dart';
 import 'package:truwallet/presentation/profile/exportkeys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:truwallet/presentation/profile/security.dart';
 import 'package:truwallet/presentation/wallet/addwallet.dart';
 import 'package:truwallet/presentation/wallet/wallets.dart';
 
@@ -90,18 +91,44 @@ class _ProfileState extends State<Profile> {
                         boxShadow: [
                           BoxShadow(color: Colors.grey[400], blurRadius: 20)
                         ]),
-                    child: ListTile(
-                        title: Text("Export "),
-                        subtitle: Text("Export Your Keys to a Secured Place"),
+                    child: Center(
+                      child: ListTile(
+                          title: Text("Export "),
+                          leading: Icon(Icons.import_export),
+                          subtitle: Text("Export Your Keys to a Secured Place"),
+                          trailing: FlatButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ExportKeygenScreen()));
+                              },
+                              child: Icon(Icons.arrow_forward_ios))),
+                    )),
+                Container(
+                    margin: const EdgeInsets.all(10),
+                    height: 75,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(color: Colors.grey[400], blurRadius: 20)
+                        ]),
+                    child: Center(
+                      child: ListTile(
+                        title: Text("Security"),
+                        leading: Icon(Icons.security),
                         trailing: FlatButton(
                             onPressed: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          ExportKeygenScreen()));
+                                      builder: (context) => SecurityScreen()));
                             },
-                            child: Icon(Icons.arrow_forward_ios)))),
+                            child: Icon(Icons.arrow_forward_ios)),
+                      ),
+                    )),
                 GestureDetector(
                   onTap: () {
                     logout();

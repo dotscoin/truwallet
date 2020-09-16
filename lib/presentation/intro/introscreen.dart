@@ -31,6 +31,8 @@ class _IntroScreenState extends State<IntroScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          title: Text("TRUWALLET",
+              style: TextStyle(color: Colors.blue, letterSpacing: 1.5)),
           elevation: 0,
           backgroundColor: Colors.white,
           iconTheme: IconThemeData(color: Colors.black),

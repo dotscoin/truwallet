@@ -3,6 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:truwallet/presentation/home/HomeScreen.dart';
 import 'package:truwallet/presentation/intro/introscreen.dart';
 
+import '../intro/introscreen.dart';
+
 class WalletsScreen extends StatefulWidget {
   @override
   _WalletsScreenState createState() => _WalletsScreenState();
@@ -45,12 +47,17 @@ class _WalletsScreenState extends State<WalletsScreen> {
       await storage.write(key: 'sk$i', value: sk[i]);
       await storage.write(key: 'vk$i', value: vk[i]);
     }
-    await storage.write(key: 'n', value: "$len");
-    await storage.write(key: 'address', value: addresses[0]);
-    await storage.write(key: 'vk', value: vk[0]);
-    await storage.write(key: 'sk', value: sk[0]);
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    if (addresses.length > 0) {
+      await storage.write(key: 'n', value: "$len");
+      await storage.write(key: 'address', value: addresses[0]);
+      await storage.write(key: 'vk', value: vk[0]);
+      await storage.write(key: 'sk', value: sk[0]);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => IntroScreen()));
+    }
   }
 
   changewallet(int index) async {
