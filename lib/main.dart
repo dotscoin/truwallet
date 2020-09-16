@@ -2,6 +2,7 @@ import 'package:truwallet/presentation/home/HomeScreen.dart';
 import 'package:truwallet/presentation/intro/introscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:truwallet/presentation/intro/loader.dart';
 
 void main() {
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -17,7 +18,6 @@ class Truwallet extends StatefulWidget {
 }
 
 class _TruwalletState extends State<Truwallet> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,7 +27,7 @@ class _TruwalletState extends State<Truwallet> {
         primarySwatch: Colors.red,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: IntroScreen(),
+      home: LoadingScreen(),
     );
   }
 }

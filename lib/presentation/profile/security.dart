@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecurityScreen extends StatefulWidget {
   @override
@@ -6,6 +7,43 @@ class SecurityScreen extends StatefulWidget {
 }
 
 class _SecurityScreenState extends State<SecurityScreen> {
+  bool isSwitched;
+  bool loader;
+  checkAuthentication() async {
+    final storage = new FlutterSecureStorage();
+    String status = await storage.read(key: 'touchid');
+    if (status == 'true') {
+      setState(() {
+        isSwitched = true;
+        loader = false;
+      });
+    } else {
+      setState(() {
+        isSwitched = false;
+        loader = false;
+      });
+    }
+  }
+
+  changeAuthentication() async {
+    final storage = new FlutterSecureStorage();
+    if (!isSwitched) {
+      await storage.delete(key: 'touchid');
+      await storage.write(key: 'touchid', value: 'true');
+    } else {
+      await storage.delete(key: 'touchid');
+      await storage.write(key: 'touchid', value: 'false');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loader = true;
+    checkAuthentication();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,21 +52,33 @@ class _SecurityScreenState extends State<SecurityScreen> {
           elevation: 0,
           iconTheme: IconThemeData(color: Colors.black),
           title: Text("Security", style: TextStyle(color: Colors.black))),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            margin: const EdgeInsets.all(5.0),
-            child: ListTile(
-              leading: Icon(Icons.settings),
-              title: Text("Enable Touch ID for App"),
-              trailing: Text("hello"),
+      body: loader
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  margin: const EdgeInsets.all(5.0),
+                  child: ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text("Enable Touch ID for App"),
+                    trailing: Switch(
+                      value: isSwitched,
+                      onChanged: (value) {
+                        changeAuthentication();
+                        setState(() {
+                          isSwitched = value;
+                        });
+                      },
+                    ),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
     );
   }
 }

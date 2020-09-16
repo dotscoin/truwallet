@@ -48,6 +48,7 @@ class _ShowKeygenScreenState extends State<ShowKeygenScreen> {
       await storage.write(key: 'vk', value: data['vk']);
       await storage.write(key: 'sk', value: data['sk']);
       await storage.write(key: 'n', value: "$n");
+      await storage.write(key: 'touchid', value: 'false');
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
     }

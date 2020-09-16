@@ -123,7 +123,7 @@ class _IntroScreenState extends State<IntroScreen> {
           SizedBox(height: 25),
           GestureDetector(
             onTap: () {
-              Navigator.push(context,
+              Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => ShowKeygenScreen()));
             },
             child: Container(
@@ -140,7 +140,7 @@ class _IntroScreenState extends State<IntroScreen> {
           SizedBox(height: 25),
           GestureDetector(
               onTap: () {
-                Navigator.push(context,
+                Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => ExistingWallet()));
               },
               child: Center(
