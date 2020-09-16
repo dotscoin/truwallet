@@ -40,12 +40,10 @@ class _ShowKeygenScreenState extends State<ShowKeygenScreen> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } else {
-      int n = 1;
+      int n = 0;
       await storage.write(key: 'address$n', value: data['address']);
       await storage.write(key: 'vk$n', value: data['vk']);
       await storage.write(key: 'sk$n', value: data['sk']);
-      await storage.write(key: 'n', value: "$n");
-      await storage.delete(key: 'n');
       await storage.write(key: 'address', value: data['address']);
       await storage.write(key: 'vk', value: data['vk']);
       await storage.write(key: 'sk', value: data['sk']);
