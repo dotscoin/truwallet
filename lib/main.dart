@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:truwallet/presentation/home/HomeScreen.dart';
 import 'package:truwallet/presentation/intro/introscreen.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,15 @@ class Truwallet extends StatefulWidget {
 }
 
 class _TruwalletState extends State<Truwallet> {
+  var auth;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final storage = new FlutterSecureStorage();
+    auth = storage.read(key: 'touchid');
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,7 +37,7 @@ class _TruwalletState extends State<Truwallet> {
         primarySwatch: Colors.red,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoadingScreen(),
+      home: auth != null ? LoadingScreen() : IntroScreen(),
     );
   }
 }

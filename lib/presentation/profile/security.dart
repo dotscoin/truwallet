@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:local_auth/local_auth.dart';
 
 class SecurityScreen extends StatefulWidget {
   @override
@@ -9,6 +10,9 @@ class SecurityScreen extends StatefulWidget {
 class _SecurityScreenState extends State<SecurityScreen> {
   bool isSwitched;
   bool loader;
+  final LocalAuthentication auth = LocalAuthentication();
+  bool hasbiometrics;
+  List<BiometricType> availableBiometrics;
   checkAuthentication() async {
     final storage = new FlutterSecureStorage();
     String status = await storage.read(key: 'touchid');
@@ -68,11 +72,19 @@ class _SecurityScreenState extends State<SecurityScreen> {
                     title: Text("Enable Touch ID for App"),
                     trailing: Switch(
                       value: isSwitched,
-                      onChanged: (value) {
-                        changeAuthentication();
-                        setState(() {
-                          isSwitched = value;
-                        });
+                      onChanged: (value) async {
+                        hasbiometrics = await auth.canCheckBiometrics;
+                        if (!hasbiometrics) {
+                          final snackbar = new SnackBar(
+                              content: Text(
+                                  "Your Device Doesn't support Biometrics"));
+                          Scaffold.of(context).showSnackBar(snackbar);
+                        } else {
+                          changeAuthentication();
+                          setState(() {
+                            isSwitched = value;
+                          });
+                        }
                       },
                     ),
                   ),
