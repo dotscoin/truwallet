@@ -2,6 +2,7 @@ import 'package:truwallet/presentation/transaction/Receive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:dio/dio.dart';
+import 'package:truwallet/presentation/transaction/send.dart';
 
 class DashBoard extends StatefulWidget {
   DashBoard({Key key}) : super(key: key);
@@ -62,42 +63,119 @@ class _DashBoardState extends State<DashBoard> {
                   )
                 ]),
             SizedBox(height: 30),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    color: Colors.blue,
-                    onPressed: () => {},
-                    child: Row(children: [
-                      Icon(Icons.arrow_upward, color: Colors.white),
-                      Text("Send Money", style: TextStyle(color: Colors.white)),
-                    ]),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    color: Colors.blue,
-                    onPressed: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ReceiveMoney()))
-                    },
-                    child: Row(children: [
-                      Icon(Icons.arrow_downward, color: Colors.white),
-                      Text("Receive Money",
-                          style: TextStyle(color: Colors.white)),
-                    ]),
-                  ),
-                )
-              ],
+            Center(
+              child: Container(
+                  margin: const EdgeInsets.all(10),
+                  height: 80,
+                  child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(25)),
+                                  child: IconButton(
+                                      icon: Icon(Icons.arrow_upward,
+                                          color: Colors.white),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SendMoney()));
+                                      }),
+                                ),
+                                Text("Send",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold))
+                              ]),
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(25)),
+                                  child: IconButton(
+                                      icon: Icon(Icons.arrow_downward,
+                                          color: Colors.white),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ReceiveMoney()));
+                                      }),
+                                ),
+                                Text("Receive",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold))
+                              ]),
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(25)),
+                                  child: IconButton(
+                                      icon: Icon(Icons.account_balance,
+                                          color: Colors.white),
+                                      onPressed: null),
+                                ),
+                                Text("buy",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold))
+                              ])
+                        ]),
+                  )),
             ),
+            // Row(
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: RaisedButton(
+            //         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            //         color: Colors.blue,
+            //         onPressed: () => {},
+            //         child: Row(children: [
+            //           Icon(Icons.arrow_upward, color: Colors.white),
+            //           Text("Send Money", style: TextStyle(color: Colors.white)),
+            //         ]),
+            //       ),
+            //     ),
+            //     Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: RaisedButton(
+            //         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            //         color: Colors.blue,
+            //         onPressed: () => {
+            //           Navigator.push(
+            //               context,
+            //               MaterialPageRoute(
+            //                   builder: (context) => ReceiveMoney()))
+            //         },
+            //         child: Row(children: [
+            //           Icon(Icons.arrow_downward, color: Colors.white),
+            //           Text("Receive Money",
+            //               style: TextStyle(color: Colors.white)),
+            //         ]),
+            //       ),
+            //     )
+            //   ],
+            // ),
             SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.all(8.0),

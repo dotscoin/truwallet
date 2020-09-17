@@ -24,20 +24,17 @@ class _TruwalletState extends State<Truwallet> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    final storage = new FlutterSecureStorage();
-    auth = storage.read(key: 'touchid');
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TRUWallet',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: auth != null ? LoadingScreen() : IntroScreen(),
-    );
+        title: 'TRUWallet',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.red,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: LoadingScreen());
   }
 }

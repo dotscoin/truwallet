@@ -14,6 +14,29 @@ class _LoadingScreenState extends State<LoadingScreen> {
   final LocalAuthentication auth = LocalAuthentication();
   bool hasbiometrics;
   List<BiometricType> availableBiometrics;
+  String authsetting;
+  apploader() async {
+    final storage = new FlutterSecureStorage();
+    authsetting = await storage.read(key: 'touchid');
+    print(authsetting);
+    if (authsetting == null || authsetting == 'false') {
+      checkifuser();
+    } else {
+      authenticate();
+    }
+  }
+
+  checkifuser() async {
+    final storage = new FlutterSecureStorage();
+    var address = await storage.read(key: 'address');
+    if (address != null) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => IntroScreen()));
+    }
+  }
 
   authenticate() async {
     final storage = new FlutterSecureStorage();
@@ -32,8 +55,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
               AndroidAuthMessages(signInTitle: "Login to Continue"));
       if (authenticated) {
         print("hello");
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => IntroScreen()));
+        checkifuser();
       }
     } catch (e) {
       print("error using biometric auth: $e");
@@ -44,7 +66,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    authenticate();
+    apploader();
   }
 
   @override

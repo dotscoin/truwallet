@@ -24,7 +24,6 @@ class _IntroScreenState extends State<IntroScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    checkifuser();
   }
 
   @override

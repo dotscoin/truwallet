@@ -50,47 +50,50 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final globalKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           iconTheme: IconThemeData(color: Colors.black),
           title: Text("Security", style: TextStyle(color: Colors.black))),
-      body: loader
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Column(
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  margin: const EdgeInsets.all(5.0),
-                  child: ListTile(
-                    leading: Icon(Icons.settings),
-                    title: Text("Enable Touch ID for App"),
-                    trailing: Switch(
-                      value: isSwitched,
-                      onChanged: (value) async {
-                        hasbiometrics = await auth.canCheckBiometrics;
-                        if (!hasbiometrics) {
-                          final snackbar = new SnackBar(
-                              content: Text(
-                                  "Your Device Doesn't support Biometrics"));
-                          Scaffold.of(context).showSnackBar(snackbar);
-                        } else {
-                          changeAuthentication();
-                          setState(() {
-                            isSwitched = value;
-                          });
-                        }
-                      },
-                    ),
+      body: Builder(
+        builder: (ctx) => loader
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  SizedBox(
+                    height: 10,
                   ),
-                )
-              ],
-            ),
+                  Container(
+                    margin: const EdgeInsets.all(5.0),
+                    child: ListTile(
+                      leading: Icon(Icons.settings),
+                      title: Text("Enable Touch ID for App"),
+                      trailing: Switch(
+                        value: isSwitched,
+                        onChanged: (value) async {
+                          hasbiometrics = await auth.canCheckBiometrics;
+                          if (!hasbiometrics) {
+                            final snackbar = new SnackBar(
+                                content: Text(
+                                    "Your Device Doesn't support Biometrics"));
+                            Scaffold.of(ctx).showSnackBar(snackbar);
+                          } else {
+                            changeAuthentication();
+                            setState(() {
+                              isSwitched = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              ),
+      ),
     );
   }
 }

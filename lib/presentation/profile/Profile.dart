@@ -1,10 +1,12 @@
 import 'package:truwallet/presentation/intro/introscreen.dart';
+import 'package:truwallet/presentation/privacypolicy/aboutus.dart';
 import 'package:truwallet/presentation/profile/exportkeys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:truwallet/presentation/profile/security.dart';
 import 'package:truwallet/presentation/wallet/addwallet.dart';
 import 'package:truwallet/presentation/wallet/wallets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -93,9 +95,8 @@ class _ProfileState extends State<Profile> {
                         ]),
                     child: Center(
                       child: ListTile(
-                          title: Text("Export "),
+                          title: Text("Export Keys"),
                           leading: Icon(Icons.import_export),
-                          subtitle: Text("Export Your Keys to a Secured Place"),
                           trailing: FlatButton(
                               onPressed: () {
                                 Navigator.push(
@@ -167,12 +168,15 @@ class _ProfileState extends State<Profile> {
                         boxShadow: [
                           BoxShadow(color: Colors.grey[400], blurRadius: 20)
                         ]),
-                    child: ListTile(
-                        title: Text("Twitter "),
-                        subtitle: Text("follow us on the Twitter"),
-                        trailing: FlatButton(
-                            onPressed: null,
-                            child: Icon(Icons.arrow_forward_ios)))),
+                    child: Center(
+                      child: ListTile(
+                          leading: FaIcon(FontAwesomeIcons.share),
+                          title: Text("Twitter "),
+                          subtitle: Text("follow us on the Twitter"),
+                          trailing: FlatButton(
+                              onPressed: null,
+                              child: Icon(Icons.arrow_forward_ios))),
+                    )),
                 Container(
                     margin: const EdgeInsets.all(10),
                     height: 75,
@@ -182,12 +186,15 @@ class _ProfileState extends State<Profile> {
                         boxShadow: [
                           BoxShadow(color: Colors.grey[400], blurRadius: 20)
                         ]),
-                    child: ListTile(
-                        title: Text("News"),
-                        subtitle: Text("Subscribe to the latest updates"),
-                        trailing: FlatButton(
-                            onPressed: null,
-                            child: Icon(Icons.arrow_forward_ios)))),
+                    child: Center(
+                      child: ListTile(
+                          leading: FaIcon(FontAwesomeIcons.solidNewspaper),
+                          title: Text("News"),
+                          subtitle: Text("Subscribe to the latest updates"),
+                          trailing: FlatButton(
+                              onPressed: null,
+                              child: Icon(Icons.arrow_forward_ios))),
+                    )),
                 Container(
                     margin: const EdgeInsets.all(10),
                     height: 75,
@@ -197,12 +204,15 @@ class _ProfileState extends State<Profile> {
                         boxShadow: [
                           BoxShadow(color: Colors.grey[400], blurRadius: 20)
                         ]),
-                    child: ListTile(
-                        title: Text("Facebook"),
-                        subtitle: Text("follow us on the Facebook"),
-                        trailing: FlatButton(
-                            onPressed: null,
-                            child: Icon(Icons.arrow_forward_ios)))),
+                    child: Center(
+                      child: ListTile(
+                          leading: FaIcon(FontAwesomeIcons.share),
+                          title: Text("Facebook"),
+                          subtitle: Text("follow us on the Facebook"),
+                          trailing: FlatButton(
+                              onPressed: null,
+                              child: Icon(Icons.arrow_forward_ios))),
+                    )),
                 SizedBox(height: 5),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
@@ -220,12 +230,20 @@ class _ProfileState extends State<Profile> {
                         boxShadow: [
                           BoxShadow(color: Colors.grey[400], blurRadius: 20)
                         ]),
-                    child: ListTile(
-                        title: Text("About"),
-                        subtitle: Text("know more"),
-                        trailing: FlatButton(
-                            onPressed: null,
-                            child: Icon(Icons.arrow_forward_ios)))),
+                    child: Center(
+                      child: ListTile(
+                          leading: FaIcon(FontAwesomeIcons.playstation),
+                          title: Text("About"),
+                          subtitle: Text("know more"),
+                          trailing: FlatButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AboutScreen()));
+                              },
+                              child: Icon(Icons.arrow_forward_ios))),
+                    )),
                 Container(
                     margin: const EdgeInsets.all(10),
                     height: 75,
@@ -235,12 +253,15 @@ class _ProfileState extends State<Profile> {
                         boxShadow: [
                           BoxShadow(color: Colors.grey[400], blurRadius: 20)
                         ]),
-                    child: ListTile(
-                        title: Text("Terms And Condition"),
-                        subtitle: Text("know More"),
-                        trailing: FlatButton(
-                            onPressed: null,
-                            child: Icon(Icons.arrow_forward_ios)))),
+                    child: Center(
+                      child: ListTile(
+                          leading: FaIcon(FontAwesomeIcons.newspaper),
+                          title: Text("Terms And Condition"),
+                          subtitle: Text("know More"),
+                          trailing: FlatButton(
+                              onPressed: null,
+                              child: Icon(Icons.arrow_forward_ios))),
+                    )),
               ],
             ),
     );

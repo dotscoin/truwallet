@@ -4,6 +4,7 @@ import 'package:truwallet/presentation/profile/Profile.dart';
 import 'package:truwallet/presentation/scanner/Scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:truwallet/presentation/transaction/send.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -31,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  ScanAndPay(address: cameraScanResult.rawContent)));
+                  SendMoney(address: cameraScanResult.rawContent)));
     }
   }
 
@@ -68,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             DashBoard(),
             SlidingUpPanel(
-              minHeight: MediaQuery.of(context).size.height / 3,
+              minHeight: MediaQuery.of(context).size.height / 3.6,
               maxHeight: MediaQuery.of(context).size.height,
               borderRadius: BorderRadius.all(Radius.circular(20)),
               panel: Column(
