@@ -15,6 +15,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   bool hasbiometrics;
   List<BiometricType> availableBiometrics;
   String authsetting;
+  bool authenticated = false;
   apploader() async {
     final storage = new FlutterSecureStorage();
     authsetting = await storage.read(key: 'touchid');
@@ -47,12 +48,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
     print("signing");
     try {
       print("trying");
-      bool authenticated = await auth.authenticateWithBiometrics(
-          localizedReason: 'Touch your finger on the sensor to login',
-          useErrorDialogs: true,
-          stickyAuth: false,
-          androidAuthStrings:
-              AndroidAuthMessages(signInTitle: "Login to Continue"));
+      while (!authenticated) {
+        authenticated = await auth.authenticateWithBiometrics(
+            localizedReason: 'Touch your finger on the sensor to login',
+            useErrorDialogs: true,
+            stickyAuth: false,
+            androidAuthStrings:
+                AndroidAuthMessages(signInTitle: "Login to Continue"));
+      }
       if (authenticated) {
         print("hello");
         checkifuser();

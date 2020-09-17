@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:truwallet/presentation/transaction/Receive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
@@ -5,6 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:truwallet/presentation/transaction/send.dart';
 
 class DashBoard extends StatefulWidget {
+  // List<double> graph_data = [];
+  // var balance;
   DashBoard({Key key}) : super(key: key);
 
   @override
@@ -13,11 +16,25 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   List<double> graph_data = [];
+  var balance;
+  String address;
+  final storage = new FlutterSecureStorage();
+  void getaddress() async {
+    address = await storage.read(key: 'address');
+  }
 
-  @override
-  void initState() {
-    super.initState();
-    fetchData();
+  void fetchbalance() async {
+    getaddress();
+    try {
+      Response response = await Dio().post("http://34.68.253.117:8000/",
+          data: {"command": "getaddressbalance", "parameters": "$address"});
+      print(response);
+      setState(() {
+        balance = response.data['balance'];
+      });
+    } on Exception catch (e) {
+      print(e);
+    }
   }
 
   void fetchData() async {
@@ -30,6 +47,13 @@ class _DashBoardState extends State<DashBoard> {
     } catch (e) {
       print(e);
     }
+  }
+
+  @override
+  void initState() {
+    fetchData();
+    fetchbalance();
+    super.initState();
   }
 
   @override
@@ -54,13 +78,15 @@ class _DashBoardState extends State<DashBoard> {
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
-                  Text(
-                    "0 TRU",
-                    style: TextStyle(
-                      fontSize: 48,
-                    ),
-                    textAlign: TextAlign.center,
-                  )
+                  balance != null
+                      ? Text(
+                          "$balance TRU",
+                          style: TextStyle(
+                            fontSize: 48,
+                          ),
+                          textAlign: TextAlign.center,
+                        )
+                      : CircularProgressIndicator(),
                 ]),
             SizedBox(height: 30),
             Center(
@@ -140,42 +166,7 @@ class _DashBoardState extends State<DashBoard> {
                         ]),
                   )),
             ),
-            // Row(
-            //   crossAxisAlignment: CrossAxisAlignment.center,
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: RaisedButton(
-            //         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            //         color: Colors.blue,
-            //         onPressed: () => {},
-            //         child: Row(children: [
-            //           Icon(Icons.arrow_upward, color: Colors.white),
-            //           Text("Send Money", style: TextStyle(color: Colors.white)),
-            //         ]),
-            //       ),
-            //     ),
-            //     Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: RaisedButton(
-            //         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            //         color: Colors.blue,
-            //         onPressed: () => {
-            //           Navigator.push(
-            //               context,
-            //               MaterialPageRoute(
-            //                   builder: (context) => ReceiveMoney()))
-            //         },
-            //         child: Row(children: [
-            //           Icon(Icons.arrow_downward, color: Colors.white),
-            //           Text("Receive Money",
-            //               style: TextStyle(color: Colors.white)),
-            //         ]),
-            //       ),
-            //     )
-            //   ],
-            // ),
+
             SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.all(8.0),

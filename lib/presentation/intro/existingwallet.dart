@@ -15,31 +15,51 @@ class _ExistingWalletState extends State<ExistingWallet> {
 
   storeandroute() async {
     final storage = new FlutterSecureStorage();
-    await storage.write(key: 'address', value: _addresscontroller.text);
-    await storage.write(key: 'vk', value: _vkcontroller.text);
-    await storage.write(key: 'sk', value: _skcontroller.text);
+    var index = await storage.read(key: 'n');
 
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    if (index != null) {
+      int n = int.parse(index);
+      n = n + 1;
+      await storage.delete(key: 'n');
+      await storage.write(key: 'address$n', value: _addresscontroller.text);
+      await storage.write(key: 'vk$n', value: _vkcontroller.text);
+      await storage.write(key: 'sk$n', value: _skcontroller.text);
+      await storage.write(key: 'n', value: "$n");
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } else {
+      int n = 0;
+      await storage.write(key: 'address$n', value: _addresscontroller.text);
+      await storage.write(key: 'vk$n', value: _vkcontroller.text);
+      await storage.write(key: 'sk$n', value: _skcontroller.text);
+      await storage.write(key: 'address', value: _addresscontroller.text);
+      await storage.write(key: 'vk', value: _vkcontroller.text);
+      await storage.write(key: 'sk', value: _skcontroller.text);
+      await storage.write(key: 'n', value: "$n");
+      await storage.write(key: 'touchid', value: 'false');
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Text("DOTSWALLET",
-            style: TextStyle(color: Colors.blue, letterSpacing: 1.5)),
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
-          color: Colors.black,
+        appBar: AppBar(
+          elevation: 0,
+          title: Text("DOTSWALLET",
+              style: TextStyle(color: Colors.blue, letterSpacing: 1.5)),
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(
+            color: Colors.black,
+          ),
         ),
-      ),
-      body: Container(
-          child: SingleChildScrollView(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+        body: Builder(
+          builder: (ctx) => Container(
+              child: SingleChildScrollView(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+                    Widget>[
               SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 5),
@@ -182,7 +202,15 @@ class _ExistingWalletState extends State<ExistingWallet> {
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    storeandroute();
+                    if (_addresscontroller.text == "" ||
+                        _vkcontroller.text == "" ||
+                        _skcontroller.text == "") {
+                      final snackbar = new SnackBar(
+                          content: Text("All the fields are required"));
+                      Scaffold.of(ctx).showSnackBar(snackbar);
+                    } else {
+                      storeandroute();
+                    }
                   },
                   child: Container(
                       height: 50,
@@ -200,7 +228,7 @@ class _ExistingWalletState extends State<ExistingWallet> {
               ),
               SizedBox(height: 25),
             ]),
-      )),
-    );
+          )),
+        ));
   }
 }
