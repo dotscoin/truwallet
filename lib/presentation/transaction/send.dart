@@ -4,7 +4,8 @@ import 'package:truwallet/presentation/home/HomeScreen.dart';
 
 class SendMoney extends StatefulWidget {
   final address;
-  SendMoney({Key key, this.address}) : super(key: key);
+  final amount;
+  SendMoney({Key key, this.address, this.amount}) : super(key: key);
   @override
   _SendMoneyState createState() => _SendMoneyState();
 }
@@ -35,6 +36,11 @@ class _SendMoneyState extends State<SendMoney> {
     if (widget.address != null) {
       setState(() {
         _addresscontroller.text = widget.address;
+      });
+    }
+    if (widget.address != null) {
+      setState(() {
+        _amountcontroller.text = widget.amount;
       });
     }
   }

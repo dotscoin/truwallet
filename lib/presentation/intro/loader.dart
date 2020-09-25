@@ -4,6 +4,8 @@ import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:truwallet/presentation/home/HomeScreen.dart';
 import 'package:truwallet/presentation/intro/introscreen.dart';
+import 'package:truwallet/presentation/transaction/send.dart';
+import 'package:uni_links/uni_links.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -31,8 +33,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
     final storage = new FlutterSecureStorage();
     var address = await storage.read(key: 'address');
     if (address != null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      String initialLink = await getInitialLink();
+      if (initialLink != null) {
+        print(initialLink);
+        var uri = Uri.parse(initialLink);
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SendMoney(
+                      address: uri.queryParameters['address'],
+                      amount: uri.queryParameters['amount'],
+                    )));
+      } else {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      }
     } else {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => IntroScreen()));
