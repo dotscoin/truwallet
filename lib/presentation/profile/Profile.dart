@@ -7,6 +7,7 @@ import 'package:truwallet/presentation/profile/security.dart';
 import 'package:truwallet/presentation/wallet/addwallet.dart';
 import 'package:truwallet/presentation/wallet/wallets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -22,6 +23,18 @@ class _ProfileState extends State<Profile> {
     setState(() {
       isloading = false;
     });
+  }
+
+  Future<void> openurl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url,
+          forceSafariVC: true,
+          forceWebView: true,
+          enableJavaScript: true,
+          enableDomStorage: true);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   logout() async {
@@ -174,7 +187,10 @@ class _ProfileState extends State<Profile> {
                           title: Text("Twitter "),
                           subtitle: Text("follow us on the Twitter"),
                           trailing: FlatButton(
-                              onPressed: null,
+                              onPressed: () {
+                                openurl(
+                                    "https://twitter.com/triunitse?lang=en");
+                              },
                               child: Icon(Icons.arrow_forward_ios))),
                     )),
                 Container(
@@ -192,7 +208,9 @@ class _ProfileState extends State<Profile> {
                           title: Text("News"),
                           subtitle: Text("Subscribe to the latest updates"),
                           trailing: FlatButton(
-                              onPressed: null,
+                              onPressed: () {
+                                openurl("https://news.triunits.com/");
+                              },
                               child: Icon(Icons.arrow_forward_ios))),
                     )),
                 Container(
@@ -210,7 +228,9 @@ class _ProfileState extends State<Profile> {
                           title: Text("Facebook"),
                           subtitle: Text("follow us on the Facebook"),
                           trailing: FlatButton(
-                              onPressed: null,
+                              onPressed: () {
+                                openurl("https://www.facebook.com/triunits/");
+                              },
                               child: Icon(Icons.arrow_forward_ios))),
                     )),
                 SizedBox(height: 5),
@@ -259,7 +279,9 @@ class _ProfileState extends State<Profile> {
                           title: Text("Terms And Condition"),
                           subtitle: Text("know More"),
                           trailing: FlatButton(
-                              onPressed: null,
+                              onPressed: () {
+                                openurl("https://triunits.com/privacypolicy");
+                              },
                               child: Icon(Icons.arrow_forward_ios))),
                     )),
               ],

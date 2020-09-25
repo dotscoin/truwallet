@@ -1,6 +1,9 @@
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:truwallet/presentation/home/HomeScreen.dart';
+import 'package:truwallet/presentation/transaction/txstatus.dart';
 
 class SendMoney extends StatefulWidget {
   final address;
@@ -13,8 +16,22 @@ class SendMoney extends StatefulWidget {
 class _SendMoneyState extends State<SendMoney> {
   TextEditingController _addresscontroller = new TextEditingController();
   TextEditingController _amountcontroller = new TextEditingController();
-  String _address;
   var cameraScanResult;
+  var address;
+  var sk;
+  final storage = new FlutterSecureStorage();
+  var total = 0;
+  void getaddress() async {
+    address = await storage.read(key: 'address');
+    sk = await storage.read(key: 'sk');
+    setState(() {
+      address = address;
+      sk=sk;
+    });
+  }
+  Map transaction;
+  List inputs;
+
   bool paymentloading = false;
   scan() async {
     var cameraScanResult = await BarcodeScanner.scan();
@@ -27,6 +44,43 @@ class _SendMoneyState extends State<SendMoney> {
     // If a unknown format was scanned this field contains a note
     if (cameraScanResult.rawContent != "") {
       _addresscontroller.text = cameraScanResult.rawContent;
+    }
+  }
+
+  sentransaction() async {
+    Response active_nodes =
+        await Dio().get("http://dns.dotscoin.com/get_nodes");
+    for (var i = 0; i < active_nodes.data['nodes'].length; i++) {
+      var node = active_nodes.data['nodes'][i]['ip_addr'];
+      try {
+        Response utxos = await Dio().post("http://${node}:8000",
+            data: {"command": "getallutxobyaddress", "parameters": "$address"});
+        var txs = utxos.data['utxos']
+        for (var i = 0; i < txs.length; i++) {
+          total += txs[i]['amount'];
+          if ( total > int.parse( _amountcontroller.text)){
+            break;
+          }
+          try{
+            Response scriptsig= await Dio().post("http://${node}:8000",
+            data: {
+              "signing_key":sk,
+              "message": {
+                "previous_tx":{
+                  "previous_tx": txs[i]['tx'],
+                  'index': txs[i]['index']
+                }
+              }
+            });
+
+          }on Exception{
+            print("transaction signing failed");
+          }
+        }
+        break;
+      } on Exception {
+        continue;
+      }
     }
   }
 
@@ -56,7 +110,11 @@ class _SendMoneyState extends State<SendMoney> {
           iconTheme: IconThemeData(color: Colors.black),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => TransactionStatus()));
+          },
           backgroundColor: Colors.white,
           child: Icon(
             Icons.arrow_forward_ios,

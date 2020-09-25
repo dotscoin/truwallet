@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:dio/dio.dart';
 import 'package:truwallet/presentation/transaction/send.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DashBoard extends StatefulWidget {
   // List<double> graph_data = [];
@@ -23,17 +24,36 @@ class _DashBoardState extends State<DashBoard> {
     address = await storage.read(key: 'address');
   }
 
+  Future<void> openurl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url,
+          forceSafariVC: true,
+          forceWebView: true,
+          enableJavaScript: true,
+          enableDomStorage: true);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   void fetchbalance() async {
     getaddress();
-    try {
-      Response response = await Dio().post("http://34.68.253.117:8000/",
-          data: {"command": "getaddressbalance", "parameters": "$address"});
-      print(response);
-      setState(() {
-        balance = response.data['balance'];
-      });
-    } on Exception catch (e) {
-      print(e);
+    Response active_nodes =
+        await Dio().get("http://dns.dotscoin.com/get_nodes");
+    for (var i = 0; i < active_nodes.data['nodes'].length; i++) {
+      var node = active_nodes.data['nodes'][i]['ip_addr'];
+      try {
+        Response response = await Dio().post("http://${node}:8000",
+            data: {"command": "getaddressbalance", "parameters": "$address"});
+        if (response.statusCode == 200) {
+          setState(() {
+            balance = response.data['balance'];
+          });
+          break;
+        }
+      } on Exception {
+        continue;
+      }
     }
   }
 
@@ -157,7 +177,10 @@ class _DashBoardState extends State<DashBoard> {
                                   child: IconButton(
                                       icon: Icon(Icons.account_balance,
                                           color: Colors.white),
-                                      onPressed: null),
+                                      onPressed: () {
+                                        openurl(
+                                            "https://triunits.com/trade/DOTS-BTC");
+                                      }),
                                 ),
                                 Text("buy",
                                     style:

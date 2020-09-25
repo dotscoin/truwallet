@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share/share.dart';
 
 class ReceiveMoney extends StatefulWidget {
   @override
@@ -8,15 +10,14 @@ class ReceiveMoney extends StatefulWidget {
 }
 
 class _ReceiveMoneyState extends State<ReceiveMoney> {
-  Image qr;
   var query = "";
+  var amount = "";
+  TextEditingController _amountcontroller = new TextEditingController();
   getaddress() async {
     final storage = new FlutterSecureStorage();
     var temp = await storage.read(key: 'address');
     setState(() {
       query = temp;
-      qr = Image.network(
-          "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${query}");
     });
   }
 
@@ -37,7 +38,7 @@ class _ReceiveMoneyState extends State<ReceiveMoney> {
           backgroundColor: Colors.white,
           iconTheme: IconThemeData(color: Colors.black),
         ),
-        body: query != "" && qr != null
+        body: query != ""
             ? Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,8 +65,11 @@ class _ReceiveMoneyState extends State<ReceiveMoney> {
                             height: 10,
                           ),
                           Center(
-                            child: qr,
-                          ),
+                              child: QrImage(
+                            data: query,
+                            version: QrVersions.auto,
+                            size: 250,
+                          )),
                           SizedBox(
                             height: 35,
                           )
@@ -90,7 +94,10 @@ class _ReceiveMoneyState extends State<ReceiveMoney> {
                                 child: IconButton(
                                     icon: Icon(Icons.content_copy,
                                         color: Colors.white),
-                                    onPressed: () {}),
+                                    onPressed: () {
+                                      Clipboard.setData(
+                                          ClipboardData(text: query));
+                                    }),
                               ),
                               SizedBox(
                                 height: 5,
@@ -111,14 +118,77 @@ class _ReceiveMoneyState extends State<ReceiveMoney> {
                                     color: Colors.blue,
                                     borderRadius: BorderRadius.circular(30)),
                                 child: IconButton(
+                                    icon: Icon(Icons.payment,
+                                        color: Colors.white),
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text("Set Amount"),
+                                              content: TextField(
+                                                controller: _amountcontroller,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                              ),
+                                              actions: [
+                                                FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text("Cancel")),
+                                                FlatButton(
+                                                  child: Text("Set",
+                                                      style: TextStyle(
+                                                          color: Colors.white)),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      amount = _amountcontroller
+                                                          .text;
+                                                    });
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  color: Colors.blue,
+                                                )
+                                              ],
+                                            );
+                                          });
+                                    }),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text("Amount",
+                                  style: TextStyle(fontWeight: FontWeight.bold))
+                            ]),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                height: 60,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: IconButton(
                                     icon:
                                         Icon(Icons.share, color: Colors.white),
                                     onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ReceiveMoney()));
+                                      String text =
+                                          "Use Truwallet to Pay via through this Link:  https://pay.trucoin.org?address=${query}&amount=${amount}";
+                                      String sub =
+                                          "Use Truwallet to Pay via through this Link";
+                                      final RenderBox box =
+                                          context.findRenderObject();
+                                      Share.share(text,
+                                          subject: sub,
+                                          sharePositionOrigin:
+                                              box.localToGlobal(Offset.zero) &
+                                                  box.size);
                                     }),
                               ),
                               SizedBox(

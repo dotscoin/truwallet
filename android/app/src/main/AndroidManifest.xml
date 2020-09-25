@@ -47,7 +47,7 @@
                   <!-- Accepts URIs that begin with YOUR_SCHEME://YOUR_HOST -->
                   <data
                     android:scheme="https"
-                    android:host="trucoin.com"/>
+                    android:host="pay.trucoin.org"/>
              </intent-filter>
 
       <!-- App Links -->
@@ -58,7 +58,7 @@
               <!-- Accepts URIs that begin with https://YOUR_HOST -->
               <data
                 android:scheme="https"
-                android:host="trucoin.com"/>
+                android:host="pay.trucoin.com"/>
             </intent-filter>
 
         </activity>

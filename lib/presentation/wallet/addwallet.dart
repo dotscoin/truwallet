@@ -105,8 +105,10 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
           SizedBox(height: 25),
           GestureDetector(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ShowKeygenScreen()));
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => ShowKeygenScreen()),
+                  (route) => false);
             },
             child: Container(
                 height: 50,
@@ -122,8 +124,10 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
           SizedBox(height: 25),
           GestureDetector(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ExistingWallet()));
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => ExistingWallet()),
+                    (route) => false);
               },
               child: Center(
                   child: Text("I Already Have a Wallet",

@@ -8,6 +8,7 @@ import 'package:truwallet/presentation/scanner/Scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:truwallet/presentation/transaction/send.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -29,17 +30,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void fetchbalance() async {
-    try {
-      Response response = await Dio().post("http://34.68.253.117:8000/",
-          data: {"command": "getaddressbalance", "parameters": "$address"});
-      print(response);
-      setState(() {
-        balance = response.data['balance'];
-        print(balance);
-      });
-    } on Exception catch (e) {
-      print(e);
+  Future<void> openurl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url,
+          forceSafariVC: true,
+          forceWebView: true,
+          enableJavaScript: true,
+          enableDomStorage: true);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 
@@ -74,35 +73,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void fetchprevioustransaction() async {
     getaddress();
-    Response response = await Dio().post("http://34.68.253.117:8000/", data: {
-      "command": "gettxsbyaddress",
-      "parameters": "1d3f347aada53547142da8edea5e0019e6ef31bb15"
-    });
-    for (var i = 0; i < response.data['txs'].length; i++) {
-      var transaction = response.data['txs'][i];
-      for (var j = 0; j < transaction['outputs'].length; j++) {
-        var output = transaction['outputs'][j];
-        if (output['address'] != address) {
-          setState(() {
-            txs.add({
-              "type": "send",
-              "address": output['address'],
-              "value": output['value']
-            });
-          });
-        } else {
-          setState(() {
-            txs.add({
-              "type": "received",
-              "address": transaction['inputs'].length != 0
-                  ? transaction['inputs'][0]['address']
-                  : "mining reward",
-              "value": output['value']
-            });
-          });
+    Response active_nodes =
+        await Dio().get("http://dns.dotscoin.com/get_nodes");
+    for (var i = 0; i < active_nodes.data['nodes'].length; i++) {
+      var node = active_nodes.data['nodes'][i]['ip_addr'];
+      try {
+        Response response = await Dio().post("http://${node}:8000",
+            data: {"command": "gettxsbyaddress", "parameters": address});
+        for (var i = 0; i < response.data['txs'].length; i++) {
+          var transaction = response.data['txs'][i];
+          for (var j = 0; j < transaction['outputs'].length; j++) {
+            var output = transaction['outputs'][j];
+            if (output['address'] != address) {
+              setState(() {
+                txs.add({
+                  "type": "send",
+                  "address": output['address'],
+                  "value": output['value']
+                });
+              });
+            } else {
+              setState(() {
+                txs.add({
+                  "type": "received",
+                  "address": transaction['inputs'].length != 0
+                      ? transaction['inputs'][0]['address']
+                      : "mining reward",
+                  "value": output['value']
+                });
+              });
+            }
+          }
         }
+      } on Exception {
+        continue;
       }
     }
+
     print(txs);
   }
 
@@ -154,7 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           DashBoard(),
           SlidingUpPanel(
-            minHeight: MediaQuery.of(context).size.height / 3.6,
+            minHeight:
+                txs.length != 0 ? MediaQuery.of(context).size.height / 4.5 : 60,
             maxHeight: MediaQuery.of(context).size.height,
             borderRadius: BorderRadius.all(Radius.circular(20)),
             panel: Column(
@@ -174,25 +182,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   ],
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 15),
                 Expanded(
-                  child: ListView.builder(
-                      itemCount: txs.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                            leading: CircleAvatar(
-                              child: txs[index]['type'] == 'send'
-                                  ? Icon(Icons.arrow_upward)
-                                  : Icon(Icons.arrow_upward),
-                              backgroundColor: txs[index]['type'] == 'send'
-                                  ? Colors.red
-                                  : Colors.green,
-                            ),
-                            title: Text("${txs[index]['address']}"),
-                            subtitle: Text("${txs[index]['value']} TRU"),
-                            trailing: FlatButton(
-                                child: Text("Pay"), onPressed: () => {}));
-                      }),
+                  child: txs.length != 0
+                      ? ListView.builder(
+                          itemCount: txs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ListTile(
+                                leading: CircleAvatar(
+                                  child: txs[index]['type'] == 'send'
+                                      ? Icon(Icons.arrow_upward)
+                                      : Icon(Icons.arrow_upward),
+                                  backgroundColor: txs[index]['type'] == 'send'
+                                      ? Colors.red
+                                      : Colors.green,
+                                ),
+                                title: Text("${txs[index]['address']}"),
+                                subtitle: Text("${txs[index]['value']} TRU"),
+                                trailing: FlatButton(
+                                    child: Text("Pay"),
+                                    onPressed: () => {
+                                          SendMoney(
+                                              address: txs[index][address])
+                                        }));
+                          })
+                      : Text(
+                          "No Previous Transactions",
+                          style: TextStyle(fontSize: 20, color: Colors.grey),
+                        ),
                 )
               ],
             ),
