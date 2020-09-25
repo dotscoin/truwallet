@@ -26,9 +26,10 @@ class _SendMoneyState extends State<SendMoney> {
     sk = await storage.read(key: 'sk');
     setState(() {
       address = address;
-      sk=sk;
+      sk = sk;
     });
   }
+
   Map transaction;
   List inputs;
 
@@ -55,25 +56,23 @@ class _SendMoneyState extends State<SendMoney> {
       try {
         Response utxos = await Dio().post("http://${node}:8000",
             data: {"command": "getallutxobyaddress", "parameters": "$address"});
-        var txs = utxos.data['utxos']
+        var txs = utxos.data['utxos'];
         for (var i = 0; i < txs.length; i++) {
           total += txs[i]['amount'];
-          if ( total > int.parse( _amountcontroller.text)){
+          if (total > int.parse(_amountcontroller.text)) {
             break;
           }
-          try{
-            Response scriptsig= await Dio().post("http://${node}:8000",
-            data: {
-              "signing_key":sk,
+          try {
+            Response scriptsig = await Dio().post("http://${node}:8000", data: {
+              "signing_key": sk,
               "message": {
-                "previous_tx":{
+                "previous_tx": {
                   "previous_tx": txs[i]['tx'],
                   'index': txs[i]['index']
                 }
               }
             });
-
-          }on Exception{
+          } on Exception {
             print("transaction signing failed");
           }
         }
@@ -111,7 +110,6 @@ class _SendMoneyState extends State<SendMoney> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => TransactionStatus()));
           },
