@@ -56,6 +56,9 @@ class _ReceiveMoneyState extends State<ReceiveMoney> {
                           ]),
                       child: Column(
                         children: [
+                          SizedBox(
+                            height: 10,
+                          ),
                           Text("Address",
                               style: TextStyle(
                                   fontSize: 20,
@@ -71,7 +74,15 @@ class _ReceiveMoneyState extends State<ReceiveMoney> {
                             size: 250,
                           )),
                           SizedBox(
-                            height: 35,
+                            height: 15,
+                          ),
+                          Text(query,
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.blue,
+                                  letterSpacing: 1)),
+                          SizedBox(
+                            height: 10,
                           )
                         ],
                       ),

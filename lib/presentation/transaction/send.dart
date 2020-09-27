@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:cryptography/cryptography.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -19,18 +22,21 @@ class _SendMoneyState extends State<SendMoney> {
   var cameraScanResult;
   var address;
   var sk;
+  var vk;
   final storage = new FlutterSecureStorage();
   var total = 0;
   void getaddress() async {
     address = await storage.read(key: 'address');
     sk = await storage.read(key: 'sk');
+    vk = await storage.read(key: 'vk');
     setState(() {
       address = address;
       sk = sk;
+      vk = vk;
     });
   }
 
-  Map transaction;
+  var transaction;
   List inputs;
 
   bool paymentloading = false;
@@ -72,9 +78,19 @@ class _SendMoneyState extends State<SendMoney> {
                 }
               }
             });
+            inputs.add({
+              "previous_tx": txs[i]['tx'],
+              "index": txs[i]['index'],
+              "scriptSig": [scriptsig.data['scriptSig']],
+              "address": address,
+              "verifying_key": vk
+            });
           } on Exception {
             print("transaction signing failed");
           }
+
+          List<int> bytes = utf8.encode(txs);
+          txs['hash'] = sha256.hash(bytes);
         }
         break;
       } on Exception {
